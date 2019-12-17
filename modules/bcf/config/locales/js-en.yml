@@ -4,3 +4,5 @@ en:
     bcf:
       import: 'Import'
       export: 'Export'
+      viewpoint: 'Viewpoint'
+      add_viewpoint: 'Add viewpoint'

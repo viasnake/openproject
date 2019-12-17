@@ -64,7 +64,7 @@ export class MainMenuToggleService {
   }
 
   public initializeMenu():void {
-    if (!this.mainMenu) return;
+    if (!this.mainMenu) { return; }
 
     this.elementWidth = parseInt(window.OpenProject.guardedLocalStorage(this.localStorageKey) as string);
 
@@ -75,7 +75,7 @@ export class MainMenuToggleService {
     }
 
     let currentProject:CurrentProjectService = this.injector.get(CurrentProjectService);
-    if (jQuery(document.body).hasClass('controller-my') && this.elementWidth == 0 || currentProject.id === null) {
+    if (jQuery(document.body).hasClass('controller-my') && this.elementWidth === 0 || currentProject.id === null) {
       this.saveWidth(this.defaultWidth);
     }
 
@@ -119,8 +119,8 @@ export class MainMenuToggleService {
 
   public closeWhenOnMobile():void {
     if (this.deviceService.isMobile) {
-      this.closeMenu()
-    };
+      this.closeMenu();
+    }
   }
 
   private setToggleTitle():void {
@@ -140,7 +140,7 @@ export class MainMenuToggleService {
     // Leave a minimum amount of space for space fot the content
     let maxMenuWidth = window.innerWidth - 520;
 
-    if (width != undefined && width > maxMenuWidth) {
+    if (width !== undefined && width > maxMenuWidth) {
       width = maxMenuWidth;
     }
 
@@ -185,6 +185,6 @@ export class MainMenuToggleService {
   }
 
   private get isGlobalPage():boolean {
-    return this.currentProject.id? false : true;
+    return this.currentProject.id ? false : true;
   }
 }

@@ -54,8 +54,11 @@ RSpec.describe "Upload attachment to meetings", :js do
   it "can upload an image to new and existing meeting agenda item via drag & drop in editor" do
     show_page.visit!
 
-    click_on "Add"
-    click_on "Agenda item"
+    within("[data-test-selector='meeting-main-add-button']") do
+      click_on "Add"
+      click_on "Agenda item"
+    end
+
 
     # adding an image
     editor.drag_attachment image_fixture.path, "Image uploaded the first time"

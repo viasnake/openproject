@@ -5,6 +5,10 @@
         component.with_header(font_weight: :bold, pl: 0) do
           render(MeetingSections::HeaderComponent.new(meeting_section: @meeting_section, state: @state))
         end
+      elsif render_backlog?
+        component.with_header do
+          render(MeetingSections::Backlogs::HeaderComponent.new(backlog: @meeting_section, box: component, collapsed: @collapsed, current_meeting: @current_meeting))
+        end
       end
       if render_new_button_in_section?
         component.with_row(data: { "empty-list-item": true }) do

@@ -58,7 +58,7 @@ module MeetingSections
       # the error is added by the models presence validation
       return unless visible?
 
-      unless user.allowed_in_project?(:manage_agendas, model.project)
+      unless user.allowed_in_project?(:manage_agendas, model.project) || model.backlog?
         errors.add :base, :error_unauthorized
       end
     end

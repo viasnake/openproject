@@ -48,4 +48,4 @@ See COPYRIGHT and LICENSE files for more details.
   end
 %>
 
-<%= angular_component_tag "opce-project-settings" %>
+<%= render Projects::Settings::General::ShowComponent.new(project: @project) %>

@@ -112,8 +112,8 @@ Rails.application.routes.draw do
     end
     resources :sections, controller: "meeting_sections" do
       collection do
-        get :new, action: :new, as: :new
-        get :cancel_new
+        post :clear_backlog
+        get :clear_backlog_dialog
       end
       member do
         get :cancel_edit

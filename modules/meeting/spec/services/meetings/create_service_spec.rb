@@ -31,6 +31,18 @@ require "spec_helper"
 require "services/base_services/behaves_like_create_service"
 
 RSpec.describe Meetings::CreateService, type: :model do
+  let(:section_double) { instance_double(MeetingSections::CreateService) }
+
+  before do
+    allow(MeetingSections::CreateService)
+      .to receive(:new)
+      .and_return(section_double)
+
+    allow(section_double)
+      .to receive(:call)
+      .and_return(ServiceResult.success)
+  end
+
   it_behaves_like "BaseServices create service" do
     let(:factory) { :meeting }
 

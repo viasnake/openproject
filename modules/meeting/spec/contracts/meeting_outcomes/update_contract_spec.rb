@@ -42,7 +42,7 @@ RSpec.describe MeetingOutcomes::UpdateContract do
 
   context "with permission" do
     let(:user) do
-      create(:user, member_with_permissions: { project => %i[view_meetings create_meeting_minutes] })
+      create(:user, member_with_permissions: { project => %i[view_meetings manage_outcomes] })
     end
 
     context "when :meeting is 'in_progress'" do
@@ -72,6 +72,15 @@ RSpec.describe MeetingOutcomes::UpdateContract do
     context "when :meeting_agenda_item is not present anymore" do
       before do
         meeting_agenda_item.destroy
+      end
+
+      it_behaves_like "contract is invalid", base: I18n.t(:text_outcome_not_editable_anymore)
+    end
+
+    context "when :meeting_agenda_item is in a backlog" do
+      before do
+        meeting.update_column(:state, :in_progress)
+        meeting_agenda_item.meeting_section.update_column(:backlog, true)
       end
 
       it_behaves_like "contract is invalid", base: I18n.t(:text_outcome_not_editable_anymore)

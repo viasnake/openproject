@@ -86,7 +86,7 @@
             item.with_leading_visual_icon(icon: :download)
           end
 
-          if @meeting.open? && User.current.allowed_in_project?(:send_meeting_agendas_notification, @meeting.project)
+          if @meeting.open? && User.current.allowed_in_project?(:send_meeting_invites_and_outcomes, @meeting.project)
             menu.with_item(
               label: t("meeting.label_mail_all_participants"),
               href: notify_project_meeting_path(@project, @meeting),

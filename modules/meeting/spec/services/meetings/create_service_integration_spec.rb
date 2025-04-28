@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -59,6 +60,13 @@ RSpec.describe Meetings::CreateService, "integration", type: :model do
         expect(subject.errors[:base]).to be_empty
         expect(subject.errors[:project_id]).to contain_exactly "can't be blank."
       end
+    end
+  end
+
+  describe "backlog" do
+    it "creates a backlog" do
+      expect(subject).to be_success
+      expect(subject.result.backlog).to be_present
     end
   end
 

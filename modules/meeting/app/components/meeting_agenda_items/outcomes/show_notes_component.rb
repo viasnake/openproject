@@ -38,13 +38,16 @@ module MeetingAgendaItems
       super
 
       @meeting_outcome = meeting_outcome
-      @meeting = @meeting_outcome.meeting_agenda_item.meeting
+      @agenda_item = meeting_outcome.meeting_agenda_item
+      @meeting = @agenda_item.meeting
     end
 
     private
 
     def edit_enabled?
-      @meeting.in_progress? && User.current.allowed_in_project?(:create_meeting_minutes, @meeting.project)
+      @meeting.in_progress? &&
+        User.current.allowed_in_project?(:manage_outcomes, @meeting.project) &&
+        !@agenda_item.in_backlog?
     end
 
     def edit_action_item(menu)

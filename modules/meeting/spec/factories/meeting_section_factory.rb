@@ -31,6 +31,7 @@
 FactoryBot.define do
   factory :meeting_section do |m|
     meeting factory: :meeting
+    backlog { false }
 
     m.sequence(:title) { |n| "Section #{n}" }
   end

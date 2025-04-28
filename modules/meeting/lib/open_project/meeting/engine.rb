@@ -44,8 +44,6 @@ module OpenProject::Meeting
         permission :view_meetings,
                    {
                      meetings: %i[index show check_for_updates download_ics participants_dialog history],
-                     meeting_agendas: %i[history show diff],
-                     meeting_minutes: %i[history show diff],
                      "meetings/menus": %i[show],
                      work_package_meetings_tab: %i[index count],
                      recurring_meetings: %i[index show new create download_ics]
@@ -77,51 +75,24 @@ module OpenProject::Meeting
                    },
                    permissible_on: :project,
                    require: :member
-        permission :meetings_send_invite,
-                   { meetings: [:icalendar] },
-                   permissible_on: :project,
-                   require: :member
-        permission :create_meeting_agendas,
-                   {
-                     meeting_agendas: %i[update preview]
-                   },
+        permission :send_meeting_invites_and_outcomes,
+                   { meetings: %i[notify icalendar] },
                    permissible_on: :project,
                    require: :member
         permission :manage_agendas,
                    {
+                     meetings: %i[change_state],
                      meeting_agenda_items: %i[new cancel_new create edit cancel_edit update destroy drop move
                                               move_to_next_meeting],
-                     meeting_sections: %i[new cancel_new create edit cancel_edit update destroy drop move]
+                     meeting_sections: %i[new cancel_new create edit cancel_edit update destroy drop move
+                                          clear_backlog clear_backlog_dialog]
                    },
                    permissible_on: :project, # TODO: Change this to :meeting when MeetingRoles are available
                    require: :member
-        permission :close_meeting_agendas,
+        permission :manage_outcomes,
                    {
-                     meetings: %i[change_state],
-                     meeting_agendas: %i[close open]
-                   },
-                   permissible_on: :project,
-                   require: :member
-        permission :send_meeting_agendas_notification,
-                   {
-                     meetings: [:notify],
-                     meeting_agendas: [:notify]
-                   },
-                   permissible_on: :project,
-                   require: :member
-        permission :send_meeting_agendas_icalendar,
-                   { meeting_agendas: [:icalendar] },
-                   permissible_on: :project,
-                   require: :member
-        permission :create_meeting_minutes,
-                   {
-                     meeting_minutes: %i[update preview],
                      meeting_outcomes: %i[new cancel_new create edit cancel_edit update destroy]
                    },
-                   permissible_on: :project,
-                   require: :member
-        permission :send_meeting_minutes_notification,
-                   { meeting_minutes: %i[notify] },
                    permissible_on: :project,
                    require: :member
       end

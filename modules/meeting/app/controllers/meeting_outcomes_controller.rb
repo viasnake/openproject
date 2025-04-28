@@ -41,11 +41,11 @@ class MeetingOutcomesController < ApplicationController
   def new
     update_all_via_turbo_stream
 
-    if @meeting.in_progress?
+    if @meeting.in_progress? && !@meeting_agenda_item.in_backlog?
       render_base_outcome_component_via_turbo_stream(meeting: @meeting, meeting_agenda_item: @meeting_agenda_item,
                                                      meeting_outcome: nil, edit: true)
     else
-      render_error_flash_message_via_turbo_stream(message: t("text_meeting_not_editable_anymore"))
+      render_error_flash_message_via_turbo_stream(message: t("text_outcome_cannot_be_added"))
     end
 
     respond_with_turbo_streams

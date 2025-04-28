@@ -1,22 +1,28 @@
 <%=
-  component_wrapper(data: wrapper_data_attributes) do
+  component_wrapper do
     flex_layout(mb: 3) do |flex|
       if @meeting.template?
         flex.with_row(mb: 3) do
-          render Primer::Alpha::Banner.new(scheme: :default,
-                                           icon: :info,
-                                           dismiss_scheme: :none) do
-            t("recurring_meeting.template.banner_html",
-              link: link_to(@meeting.recurring_meeting.title,
-                            project_recurring_meeting_path(@meeting.project, @meeting.recurring_meeting)))
+          render Primer::Alpha::Banner.new(
+            scheme: :default,
+            icon: :info,
+            dismiss_scheme: :none
+          ) do
+            t(
+              "recurring_meeting.template.banner_html",
+              link: link_to(
+                @meeting.recurring_meeting.title,
+                project_recurring_meeting_path(@meeting.project, @meeting.recurring_meeting)
+              )
+            )
           end
         end
       end
-      flex.with_row(classes: "dragula-container", id: insert_target_modifier_id, data: { "allowed-drop-type": "section" }.merge(drop_target_config)) do
+      flex.with_row(id: insert_target_modifier_id, data: { "allowed-drop-type": "section" }.merge(drop_target_config)) do
         first_and_last = [@meeting.sections.first, @meeting.sections.last]
         render(
           MeetingSections::ShowComponent.with_collection(
-            @meeting.sections,
+            sections_except_backlog,
             first_and_last:
           )
         )

@@ -39,7 +39,7 @@ interface TargetConfig {
   targetId:string|null;
 }
 
-export default class extends Controller {
+export default class GenericDragAndDropController extends Controller {
   drake:Drake|undefined;
   targetConfigs:TargetConfig[];
 
@@ -148,25 +148,7 @@ export default class extends Controller {
 
   async drop(el:Element, target:Element, _source:Element|null, _sibling:Element|null) {
     const dropUrl = el.getAttribute('data-drop-url');
-
-    let targetPosition = Array.from(target.children).indexOf(el);
-    if (target.children.length > 0 && target.children[0].getAttribute('data-empty-list-item') === 'true') {
-      // if the target container is empty, a list item showing an empty message might be shown
-      // this should not be counted as a list item
-      // thus we need to subtract 1 from the target position
-      targetPosition -= 1;
-    }
-
-    const targetConfig = this.targetConfigs.find((config) => config.container === target);
-    const targetId = targetConfig?.targetId as string|undefined;
-
-    const data = new FormData();
-
-    data.append('position', (targetPosition + 1).toString());
-
-    if (targetId) {
-      data.append('target_id', targetId.toString());
-    }
+    const data = this.buildData(el, target);
 
     if (dropUrl) {
       const response = await fetch(dropUrl, {
@@ -199,5 +181,28 @@ export default class extends Controller {
     if (this.drake) {
       this.drake.destroy();
     }
+  }
+
+  protected buildData(el:Element, target:Element):FormData {
+    let targetPosition = Array.from(target.children).indexOf(el);
+    if (target.children.length > 0 && target.children[0].getAttribute('data-empty-list-item') === 'true') {
+      // if the target container is empty, a list item showing an empty message might be shown
+      // this should not be counted as a list item
+      // thus we need to subtract 1 from the target position
+      targetPosition -= 1;
+    }
+
+    const data = new FormData();
+
+    data.append('position', (targetPosition + 1).toString());
+
+    const targetConfig = this.targetConfigs.find((config) => config.container === target);
+    const targetId = targetConfig?.targetId as string|undefined;
+
+    if (targetId) {
+      data.append('target_id', targetId.toString());
+    }
+
+    return data;
   }
 }

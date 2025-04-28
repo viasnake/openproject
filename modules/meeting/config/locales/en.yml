@@ -367,16 +367,10 @@ en:
   permission_edit_meetings: "Edit meetings"
   permission_delete_meetings: "Delete meetings"
   permission_view_meetings: "View meetings"
-  permission_create_meeting_agendas: "Create meeting agendas"
-  permission_create_meeting_agendas_explanation: "Allows editing the Classic Meeting's agenda content."
   permission_manage_agendas: "Manage agendas"
   permission_manage_agendas_explanation: "Allows managing the Dynamic Meeting's agenda items."
-  permission_close_meeting_agendas: "Close agendas"
-  permission_send_meeting_agendas_notification: "Send review notification for agendas"
-  permission_create_meeting_minutes: "Manage minutes"
-  permission_send_meeting_minutes_notification: "Send review notification for minutes"
-  permission_meetings_send_invite: "Invite users to meetings"
-  permission_send_meeting_agendas_icalendar: "Send meeting agenda as calendar entry"
+  permission_manage_outcomes: "Manage outcomes"
+  permission_send_meeting_invites_and_outcomes: "Send meeting invites and outcomes to participants"
 
   project_module_meetings: "Meetings"
 
@@ -391,8 +385,8 @@ en:
   text_notificiation_invited: "This mail contains an ics entry for the meeting below:"
 
   text_meeting_empty_heading: "Your meeting is empty"
-  text_meeting_empty_description_1: "Start by adding agenda items below. Each item can be as simple as just a title, but you can also add additional details like duration and notes."
-  text_meeting_empty_description_2: 'You can also add references to existing work packages. When you do, related notes will automatically be visible in the work package''s "Meetings" tab.'
+  text_meeting_empty_description1: "Start by adding agenda items below. Each item can be as simple as just a title, but you can also add additional details like duration and notes."
+  text_meeting_empty_description2: 'You can also add references to existing work packages. When you do, related notes will automatically be visible in the work package''s "Meetings" tab.'
   label_meeting_empty_action: "Add agenda item"
 
   label_meeting_actions: "Meeting actions"
@@ -413,6 +407,8 @@ en:
   label_agenda_item_deleted_wp: "Deleted work package reference"
   label_agenda_item_actions: "Agenda items actions"
   label_agenda_item_move_to_next: "Move to next meeting"
+  label_agenda_item_move_to_backlog: "Move to backlog"
+  label_agenda_item_move_to_current_meeting: "Move to current meeting"
   label_agenda_item_move_to_top: "Move to top"
   label_agenda_item_move_to_bottom: "Move to bottom"
   label_agenda_item_move_up: "Move up"
@@ -427,6 +423,28 @@ en:
   label_agenda_outcome_edit: "Edit outcome"
   label_agenda_outcome_delete: "Remove outcome"
   text_outcome_not_editable_anymore: "This outcome is not editable anymore."
+  text_outcome_cannot_be_added: "An outcome can no longer be added."
+
+  label_backlog_clear: "Clear backlog"
+  label_backlog_clear_button: "Clear all"
+  text_backlog_clear_error: "One or more errors occurred while trying to clear the backlog."
+
+  label_agenda_backlog: "Agenda backlog"
+  text_agenda_backlog: >
+    This backlog is unique to this one-time meeting.
+    You can drag items in and out to add or remove them from the meeting agenda.
+  label_agenda_backlog_clear_title: "Clear agenda backlog?"
+  text_agenda_backlog_clear_description: >
+    Are you sure you want to remove all items currently in the agenda items? This action is not reversible.
+  label_series_backlog: "Series backlog"
+  text_series_backlog: > 
+    The backlog is shared with all occurrences of this series.
+    You can drag items in and out to add or remove them from a particular meeting.
+  label_series_backlog_clear_title: "Clear series backlog?"
+  text_series_backlog_clear_description: >
+    This will remove all items in the series backlog, which is shared with all meetings in the series.
+    Are you sure you want to continue? This action is not reversible.
+
 
   text_agenda_item_title: 'Agenda item "%{title}"'
   text_agenda_work_package_deleted: 'Agenda item for deleted work package'

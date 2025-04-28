@@ -30,11 +30,12 @@
 class MeetingSectionsController < ApplicationController
   include AttachableServiceCall
   include OpTurbo::ComponentStream
+  include OpTurbo::DialogStreamHelper
   include Meetings::AgendaComponentStreams
 
   before_action :set_meeting
   before_action :set_meeting_section,
-                except: %i[create]
+                except: %i[create clear_backlog clear_backlog_dialog]
   before_action :authorize
 
   def create # rubocop:disable Metrics/AbcSize
@@ -170,6 +171,27 @@ class MeetingSectionsController < ApplicationController
     respond_with_turbo_streams
   end
 
+  def clear_backlog
+    errors = []
+    meeting_section = @meeting.backlog
+    @meeting.backlog.agenda_items.each do |item|
+      call = ::MeetingAgendaItems::DeleteService
+        .new(user: current_user, model: item)
+        .call
+
+      errors << call.errors unless call.success?
+    end
+
+    update_section_via_turbo_stream(collapsed: true, meeting_section:)
+    render_error_flash_message_via_turbo_stream(message: t("text_backlog_clear_error")) if errors.any?
+
+    respond_with_turbo_streams
+  end
+
+  def clear_backlog_dialog
+    respond_with_dialog MeetingSections::Backlogs::ClearBacklogDialogComponent.new(@meeting)
+  end
+
   private
 
   def set_meeting
@@ -203,5 +225,9 @@ class MeetingSectionsController < ApplicationController
     update_all_via_turbo_stream
     # show additional base error message
     render_base_error_in_flash_message_via_turbo_stream(call.errors)
+  end
+
+  def toggle_params
+    @toggle_params ||= params.permit(:id, :collapsed)
   end
 end

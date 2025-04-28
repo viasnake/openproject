@@ -72,6 +72,7 @@ class MeetingAgendaItem < ApplicationRecord
   after_save :trigger_meeting_agenda_item_time_slots_calculation, if: Proc.new { |item|
     item.duration_in_minutes_previously_changed? || item.position_previously_changed?
   }
+  before_save :update_meeting_to_match_section
   after_destroy :trigger_meeting_agenda_item_time_slots_calculation
   # after_destroy :delete_meeting_section_if_empty
 
@@ -87,6 +88,11 @@ class MeetingAgendaItem < ApplicationRecord
 
       self.meeting_section = meeting_section
     end
+  end
+
+  def update_meeting_to_match_section
+    # TODO - see #63561
+    self.meeting = meeting_section.meeting
   end
 
   def trigger_meeting_agenda_item_time_slots_calculation
@@ -123,5 +129,9 @@ class MeetingAgendaItem < ApplicationRecord
 
   def copy_attributes
     attributes.except("id", "meeting_id")
+  end
+
+  def in_backlog?
+    meeting_section.backlog?
   end
 end

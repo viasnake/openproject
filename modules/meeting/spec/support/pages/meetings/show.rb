@@ -311,6 +311,95 @@ module Pages::Meetings
       expect(page).to have_no_css("op-meeting-outcome--button")
     end
 
+    def expect_backlog(collapsed:)
+      expect(page).to have_css(".CollapsibleHeader", text: I18n.t("label_agenda_backlog"))
+
+      if collapsed
+        expect(page).to have_css(".CollapsibleHeader.CollapsibleHeader--collapsed")
+        expect(page).to have_no_text(I18n.t("text_agenda_backlog"))
+      else
+        expect(page).to have_no_css(".CollapsibleHeader.CollapsibleHeader--collapsed")
+        expect(page).to have_text(I18n.t("text_agenda_backlog"))
+      end
+    end
+
+    def expect_series_backlog(collapsed:)
+      expect(page).to have_css(".CollapsibleHeader", text: I18n.t("label_series_backlog"))
+
+      if collapsed
+        expect(page).to have_css(".CollapsibleHeader.CollapsibleHeader--collapsed")
+        expect(page).to have_no_text(I18n.t("text_series_backlog"))
+      else
+        expect(page).to have_no_css(".CollapsibleHeader.CollapsibleHeader--collapsed")
+        expect(page).to have_text(I18n.t("text_series_backlog"))
+      end
+    end
+
+    def expect_backlog_count(count)
+      within("#meeting-sections-backlogs-container-component") do
+        expect(page).to have_css(".Counter", text: count)
+      end
+    end
+
+    def expect_no_backlog
+      expect(page).to have_no_css(".CollapsibleHeader")
+    end
+
+    def expect_empty_backlog
+      within_backlog do
+        expect(page).to have_text("Drag items here or create a new one")
+        expect(page).to have_button("Add")
+      end
+    end
+
+    def add_agenda_item_to_backlog(type: MeetingAgendaItem, &)
+      select_backlog_action(type.model_name.human)
+
+      within("#meeting-sections-backlogs-container-component") do
+        in_agenda_form do
+          yield
+          click_on("Save")
+        end
+      end
+    end
+
+    def select_backlog_action(action)
+      retry_block do
+        click_on_backlog_menu
+        page.find(".Overlay")
+      end
+
+      page.within(".Overlay") do
+        click_on action
+      end
+    end
+
+    def click_on_backlog_menu
+      page.within("#meeting-sections-backlogs-header-component") do
+        page.find_test_selector("meeting-section-action-menu").click
+      end
+    end
+
+    def within_backlog(&)
+      page.within("#meeting-sections-backlogs-container-component", &)
+    end
+
+    def click_on_backlog
+      within_backlog do
+        page.find(".CollapsibleHeader").click
+      end
+    end
+
+    def clear_backlog
+      retry_block do
+        select_backlog_action(I18n.t("label_backlog_clear"))
+        expect(page).to have_modal(I18n.t("label_backlog_clear"))
+        page.within_modal(I18n.t("label_backlog_clear")) do
+          click_on "Clear all"
+        end
+      end
+    end
+
     def edit_agenda_item(item, &)
       select_action item, "Edit"
       expect_item_edit_form(item)
@@ -386,6 +475,18 @@ module Pages::Meetings
       expect(page).to have_link("Reopen meeting")
     end
 
+    def close_meeting_from_in_progress
+      page.within("#meetings-side-panel-state-component") do
+        click_on("Close meeting")
+      end
+    end
+
+    def start_meeting
+      page.within("#meetings-side-panel-state-component") do
+        click_on("Start meeting")
+      end
+    end
+
     def reopen_meeting
       click_on("Reopen meeting")
       expect(page).to have_link("Start meeting")
@@ -400,7 +501,9 @@ module Pages::Meetings
     end
 
     def in_latest_section_form(&)
-      page.within(all(".op-meeting-section-container").last, &)
+      sections = all(".op-meeting-section-container")
+      last_except_backlog = sections[-2]
+      page.within(last_except_backlog, &)
     end
 
     def add_section(&)
@@ -440,6 +543,49 @@ module Pages::Meetings
       accept_confirm do
         select_section_action(section, "Delete")
       end
+    end
+
+    def expect_backlog_actions(item, series: false)
+      open_menu(item) do
+        expect(page).to have_css(".ActionListItem-label", text: "Edit")
+        expect(page).to have_css(".ActionListItem-label", text: "Add notes")
+        expect(page).to have_css(".ActionListItem-label", text: "Move to current meeting")
+        expect(page).to have_css(".ActionListItem-label", text: "Delete")
+
+        expect(page).to have_no_css(".ActionListItem-label", text: "Move to backlog")
+        expect(page).to have_no_css(".ActionListItem-label", text: "Add outcome")
+        if series
+          expect(page).to have_no_css(".ActionListItem-label", text: "Move to next meeting")
+        end
+      end
+
+      page.within("#meeting-agenda-items-item-component-#{item.id}") do
+        page.find_test_selector("op-meeting-agenda-actions").click
+      end
+    end
+
+    def expect_non_backlog_actions(item, series: false)
+      open_menu(item) do
+        expect(page).to have_css(".ActionListItem-label", text: "Move to backlog")
+        expect(page).to have_no_css(".ActionListItem-label", text: "Move to current meeting")
+        if series
+          expect(page).to have_css(".ActionListItem-label", text: "Move to next meeting")
+        end
+      end
+
+      page.within("#meeting-agenda-items-item-component-#{item.id}") do
+        page.find_test_selector("op-meeting-agenda-actions").click
+      end
+    end
+
+    def expect_no_backlog_header_actions
+      within_backlog do
+        expect { page.find_test_selector("meeting-section-action-menu") }.to raise_error(Capybara::ElementNotFound)
+      end
+    end
+
+    def expect_blankslate
+      expect(page).to have_test_selector("meeting-blankslate")
     end
   end
 end

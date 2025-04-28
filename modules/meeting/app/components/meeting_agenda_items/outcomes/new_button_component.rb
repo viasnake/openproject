@@ -46,7 +46,9 @@ module MeetingAgendaItems::Outcomes
     end
 
     def render?
-      @meeting.in_progress? && User.current.allowed_in_project?(:create_meeting_minutes, @meeting.project)
+      @meeting.in_progress? &&
+        User.current.allowed_in_project?(:manage_outcomes, @meeting.project) &&
+        !@meeting_agenda_item.in_backlog?
     end
   end
 end

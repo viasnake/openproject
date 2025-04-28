@@ -6,14 +6,18 @@
 
     show_page.with_row do
       render(Primer::Alpha::Layout.new(stacking_breakpoint: :md)) do |content|
-        content.with_main do
+        content.with_main(classes: "dragula-container", data: wrapper_data_attributes) do
           flex_layout do |agenda|
             agenda.with_row do
               render(MeetingAgendaItems::ListComponent.new(meeting: @meeting))
             end
 
-            agenda.with_row do
+            agenda.with_row(data: { "test-selector": "meeting-main-add-button" }) do
               render(MeetingAgendaItems::NewButtonComponent.new(meeting: @meeting))
+            end
+
+            agenda.with_row do
+              render(MeetingSections::Backlogs::ContainerComponent.new(meeting: @meeting, collapsed: @collapsed))
             end
 
             agenda.with_row(mt: 3, display: [:block, nil, :none]) do

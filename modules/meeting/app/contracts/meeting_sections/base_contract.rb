@@ -39,5 +39,6 @@ module MeetingSections
 
     attribute :title
     attribute :position
+    attribute :backlog
   end
 end

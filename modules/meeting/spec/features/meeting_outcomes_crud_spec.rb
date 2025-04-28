@@ -30,7 +30,7 @@
 
 require "spec_helper"
 
-require_relative "../../../support/pages/meetings/show"
+require_relative "../support/pages/meetings/show"
 
 RSpec.describe "Meeting Outcomes CRUD", :js do
   shared_let(:project) { create(:project, enabled_module_names: %w[meetings]) }
@@ -38,12 +38,12 @@ RSpec.describe "Meeting Outcomes CRUD", :js do
     create :user,
            lastname: "First",
            preferences: { time_zone: "Etc/UTC" },
-           member_with_permissions: { project => %i[view_meetings manage_agendas close_meeting_agendas create_meeting_minutes] }
+           member_with_permissions: { project => %i[view_meetings manage_agendas manage_outcomes] }
   end
   shared_let(:other_user) do
     create :user,
            lastname: "Second",
-           member_with_permissions: { project => %i[view_meetings manage_agendas close_meeting_agendas] }
+           member_with_permissions: { project => %i[view_meetings manage_agendas] }
   end
   shared_let(:meeting) do
     create :meeting,
@@ -64,7 +64,7 @@ RSpec.describe "Meeting Outcomes CRUD", :js do
     TextEditorField.new(page, "Outcome", selector: test_selector("meeting-outcome-input"))
   end
 
-  context "when a user has the necessary 'create_meeting_minutes' permission" do
+  context "when a user has the necessary 'manage_outcomes' permission" do
     before do
       meeting.update(state: state)
       login_as current_user

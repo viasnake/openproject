@@ -34,14 +34,9 @@ modules_permissions:
     - :edit_meetings
     - :delete_meetings
     - :view_meetings
-    - :create_meeting_agendas
     - :manage_agendas
-    - :close_meeting_agendas
-    - :send_meeting_agendas_notification
-    - :send_meeting_agendas_icalendar
-    - :create_meeting_minutes
-    - :send_meeting_minutes_notification
-    - :meetings_send_invite
+    - :manage_outcomes
+    - :send_meeting_invites_and_outcomes
   - role: :default_role_reader
     add:
     - :view_meetings

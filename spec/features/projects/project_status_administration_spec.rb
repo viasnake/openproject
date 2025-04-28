@@ -81,7 +81,7 @@ RSpec.describe "Projects status administration", :js do
     status_field.select_option "Off track"
     status_description.set_markdown "Oh no"
 
-    click_button "Save"
+    click_button "Update status"
 
     status_field.expect_selected "OFF TRACK"
     status_description.expect_value "Oh no"

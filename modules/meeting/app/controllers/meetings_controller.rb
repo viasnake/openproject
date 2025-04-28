@@ -296,6 +296,7 @@ class MeetingsController < ApplicationController
       update_sidebar_state_component_via_turbo_stream
     else
       update_all_via_turbo_stream
+      update_backlog_via_turbo_stream(collapsed: nil)
     end
 
     respond_with_turbo_streams

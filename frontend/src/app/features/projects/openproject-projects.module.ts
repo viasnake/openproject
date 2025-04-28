@@ -34,7 +34,6 @@ import { NewProjectComponent } from 'core-app/features/projects/components/new-p
 import { ReactiveFormsModule } from '@angular/forms';
 import { OpSharedModule } from 'core-app/shared/shared.module';
 import { CopyProjectComponent } from 'core-app/features/projects/components/copy-project/copy-project.component';
-import { ProjectsComponent } from './components/projects/projects.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
@@ -49,7 +48,6 @@ import { NgSelectModule } from '@ng-select/ng-select';
     DynamicFormsModule,
   ],
   declarations: [
-    ProjectsComponent,
     NewProjectComponent,
     CopyProjectComponent,
   ],

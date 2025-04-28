@@ -12,6 +12,7 @@ module Primer
         def initialize(input:, rich_text_options:)
           super()
           @input = input
+          @rich_text_data = rich_text_options.delete(:data) { {} }
           @rich_text_options = rich_text_options
         end
       end

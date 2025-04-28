@@ -47,6 +47,7 @@ module Meetings
           href: helpers.project_meeting_path(project, meeting),
           size: :medium,
           data: {
+
             keep_scroll_position_target: "triggerButton"
           }
         ) { I18n.t("label_meeting_reload") }

@@ -60,7 +60,10 @@ module MeetingAgendaItems
     end
 
     def add_outcome_action?
-      @meeting_agenda_item.editable? && @meeting.in_progress? && !@meeting_agenda_item.outcomes.exists?
+      @meeting_agenda_item.editable? &&
+        @meeting.in_progress? &&
+        !@meeting_agenda_item.outcomes.exists? &&
+        !@meeting_agenda_item.in_backlog?
     end
 
     def first?
@@ -131,7 +134,7 @@ module MeetingAgendaItems
     end
 
     def move_to_next_meeting_action_item(menu)
-      return if @meeting.templated?
+      return if in_template?
       return if @series.nil?
 
       next_date = @series.next_occurrence(from_time: @meeting.start_time)
@@ -186,6 +189,28 @@ module MeetingAgendaItems
       end
     end
 
+    def move_to_backlog_action_item(menu)
+      menu.with_item(label: I18n.t(:label_agenda_item_move_to_backlog),
+                     tag: :button,
+                     content_arguments: { data: {
+                       action: "click->add-meeting-params#interceptMoveTo",
+                       href: drop_meeting_agenda_item_path(@meeting_agenda_item.meeting, @meeting_agenda_item, type: :to_backlog)
+                     } }) do |item|
+        item.with_leading_visual_icon(icon: "discussion-outdated")
+      end
+    end
+
+    def move_to_current_meeting_action_item(menu)
+      menu.with_item(label: I18n.t(:label_agenda_item_move_to_current_meeting),
+                     tag: :button,
+                     content_arguments: { data: {
+                       action: "click->add-meeting-params#interceptMoveTo",
+                       href: drop_meeting_agenda_item_path(@meeting_agenda_item.meeting, @meeting_agenda_item, type: :to_current)
+                     } }) do |item|
+        item.with_leading_visual_icon(icon: "cross-reference")
+      end
+    end
+
     def duration_color_scheme
       if @meeting.end_time < @meeting_agenda_item.end_time
         :danger
@@ -203,7 +228,15 @@ module MeetingAgendaItems
     end
 
     def move_to_next_meeting_enabled?
-      edit_enabled? && @meeting.recurring? && @meeting.recurring_meeting&.next_occurrence.present?
+      edit_enabled? && @meeting.recurring? && @meeting.recurring_meeting&.next_occurrence.present? && !in_template?
+    end
+
+    def in_backlog?
+      @meeting_agenda_item.meeting_section.backlog?
+    end
+
+    def in_template?
+      @meeting.templated?
     end
   end
 end

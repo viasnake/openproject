@@ -43,6 +43,8 @@ class MeetingSection < ApplicationRecord
 
   default_scope { order(:position) }
 
+  scope :backlog, -> { where(backlog: true) }
+
   def trigger_meeting_agenda_item_time_slots_calculation
     meeting.calculate_agenda_item_time_slots
   end
@@ -61,5 +63,13 @@ class MeetingSection < ApplicationRecord
 
   def agenda_items_sum_duration_in_minutes
     agenda_items.sum(:duration_in_minutes)
+  end
+
+  def last_position
+    if agenda_items.empty?
+      1
+    else
+      agenda_items.maximum(:position) + 1
+    end
   end
 end

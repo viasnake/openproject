@@ -58,6 +58,7 @@ import { fromEvent } from 'rxjs';
 import { AttachmentCollectionResource } from 'core-app/features/hal/resources/attachment-collection-resource';
 import { populateInputsFromDataset } from 'core-app/shared/components/dataset-inputs';
 import { navigator } from '@hotwired/turbo';
+import { uniqueId } from 'lodash';
 
 
 @Component({
@@ -286,12 +287,20 @@ export class CkeditorAugmentedTextareaComponent extends UntilDestroyedMixin impl
 
   private setLabel() {
     const textareaId = this.textareaSelector.substring(1);
-    const label = jQuery(`label[for=${textareaId}]`);
+    const label = document.querySelector<HTMLLabelElement>(`label[for=${textareaId}]`)!;
 
-    const ckContent = this.element.querySelector('.ck-content') as HTMLElement;
+    const ckContent = this.element.querySelector<HTMLElement>('.ck-content')!;
+
+    let labelId;
+    if (label.hasAttribute('id')) {
+      labelId = label.getAttribute('id')!;
+    } else {
+      labelId = uniqueId('label-');
+      label.setAttribute('id', labelId);
+    }
 
     ckContent.removeAttribute('aria-label');
-    ckContent.setAttribute('aria-labelledby', textareaId);
+    ckContent.setAttribute('aria-labelledby', labelId);
 
     fromEvent(label, 'click')
       .pipe(this.untilDestroyed())

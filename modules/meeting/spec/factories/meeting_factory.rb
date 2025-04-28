@@ -46,6 +46,9 @@ FactoryBot.define do
 
     after(:create) do |meeting, evaluator|
       meeting.project = evaluator.project if evaluator.project
+
+      # create backlog
+      create(:meeting_section, meeting:, backlog: true)
     end
 
     factory :meeting_template do |meeting|

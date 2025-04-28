@@ -276,14 +276,15 @@ class PermittedParams
                                                 :project_type_id,
                                                 :parent_id,
                                                 :templated,
-                                                status: %i(code explanation),
+                                                :status_code,
+                                                :status_explanation,
                                                 custom_fields: [],
                                                 work_package_custom_field_ids: [],
                                                 type_ids: [],
                                                 enabled_module_names: [])
 
-    if whitelist[:status] && whitelist[:status][:code] && whitelist[:status][:code].blank?
-      whitelist[:status][:code] = nil
+    if whitelist.has_key?(:status_code) && whitelist[:status_code].blank?
+      whitelist[:status_code] = nil
     end
 
     whitelist.merge(custom_field_values(:project))

@@ -66,9 +66,7 @@ RSpec.describe "projects/settings/general/show" do
 
     before do
       assign(:project, project)
-      allow(project).to receive(:copy_allowed?).and_return(true)
       allow(User).to receive(:current).and_return(admin)
-      allow(view).to receive(:labelled_tabular_form_for).and_return("")
       render
     end
 
@@ -83,9 +81,7 @@ RSpec.describe "projects/settings/general/show" do
 
     before do
       assign(:project, project)
-      allow(project).to receive(:copy_allowed?).and_return(true)
       allow(User).to receive(:current).and_return(non_admin)
-      allow(view).to receive(:labelled_tabular_form_for).and_return("")
       render
     end
 

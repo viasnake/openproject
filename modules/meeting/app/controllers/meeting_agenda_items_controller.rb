@@ -40,6 +40,7 @@ class MeetingAgendaItemsController < ApplicationController
                 except: %i[new cancel_new create]
   before_action :authorize
   before_action :check_recurring_meeting_param, only: %i[move_to_next_meeting]
+  before_action :assign_drop_params, only: %i[drop]
 
   def new
     if @meeting.closed?
@@ -47,9 +48,12 @@ class MeetingAgendaItemsController < ApplicationController
       render_error_flash_message_via_turbo_stream(message: t("text_meeting_not_editable_anymore"))
     else
       if params[:meeting_section_id].present?
-        meeting_section = @meeting.sections.find(params[:meeting_section_id])
+        meeting_section = MeetingSection.find_by(id: params[:meeting_section_id])
+        if meeting_section.backlog?
+          collapsed = false
+        end
       end
-      render_agenda_item_form_via_turbo_stream(meeting_section:, type: @agenda_item_type)
+      render_agenda_item_form_via_turbo_stream(meeting_section:, collapsed:, type: @agenda_item_type)
     end
 
     respond_with_turbo_streams
@@ -57,9 +61,12 @@ class MeetingAgendaItemsController < ApplicationController
 
   def cancel_new
     if params[:meeting_section_id].present?
-      meeting_section = @meeting.sections.find(params[:meeting_section_id])
+      meeting_section = MeetingSection.find_by(id: params[:meeting_section_id])
       if meeting_section.agenda_items.empty?
-        update_section_via_turbo_stream(form_hidden: true, meeting_section:)
+        if meeting_section.backlog?
+          collapsed = false
+        end
+        update_section_via_turbo_stream(form_hidden: true, meeting_section:, collapsed:)
       else
         update_new_button_via_turbo_stream(disabled: false, meeting_section:)
       end
@@ -86,9 +93,14 @@ class MeetingAgendaItemsController < ApplicationController
     if call.success?
       reset_meeting_from_agenda_item
       # enable continue editing
-      add_item_via_turbo_stream(clear_slate: false)
       update_header_component_via_turbo_stream
       update_sidebar_details_component_via_turbo_stream
+      if @meeting_agenda_item.meeting_section.backlog?
+        update_section_via_turbo_stream(meeting_section: @meeting_agenda_item.meeting_section, collapsed: false)
+        update_new_button_via_turbo_stream(disabled: false)
+      else
+        add_item_via_turbo_stream(clear_slate: false)
+      end
     else
       # show errors
       update_new_component_via_turbo_stream(
@@ -137,7 +149,7 @@ class MeetingAgendaItemsController < ApplicationController
     respond_with_turbo_streams
   end
 
-  def destroy
+  def destroy # rubocop:disable Metrics/AbcSize
     section = @meeting_agenda_item.meeting_section
 
     call = ::MeetingAgendaItems::DeleteService
@@ -146,10 +158,14 @@ class MeetingAgendaItemsController < ApplicationController
 
     if call.success?
       reset_meeting_from_agenda_item
-      remove_item_via_turbo_stream(clear_slate: @meeting.agenda_items.empty?)
       update_header_component_via_turbo_stream
-      update_section_header_via_turbo_stream(meeting_section: section) if section&.reload.present?
       update_sidebar_details_component_via_turbo_stream
+      if section.backlog?
+        update_section_via_turbo_stream(meeting_section: section, collapsed: false)
+      else
+        remove_item_via_turbo_stream(clear_slate: @meeting.agenda_items.empty?)
+        update_section_header_via_turbo_stream(meeting_section: section) if section&.reload.present?
+      end
     else
       generic_call_failure_response(call)
     end
@@ -157,19 +173,27 @@ class MeetingAgendaItemsController < ApplicationController
     respond_with_turbo_streams
   end
 
-  def drop
-    call = ::MeetingAgendaItems::DropService.new(
-      user: current_user, meeting_agenda_item: @meeting_agenda_item
-    ).call(
-      target_id: params[:target_id],
-      position: params[:position]
-    )
+  def drop # rubocop:disable Metrics/AbcSize
+    meeting_agenda_item_section = @meeting_agenda_item.meeting_section
+
+    call = if @target_id.nil?
+             ::MeetingAgendaItems::UpdateService
+               .new(user: current_user, model: @meeting_agenda_item)
+               .call(meeting_id: params[:current_meeting_id], meeting_section: nil)
+           else
+             ::MeetingAgendaItems::DropService
+               .new(user: current_user, meeting_agenda_item: @meeting_agenda_item)
+               .call(target_id: @target_id, position: @position)
+           end
 
     if call.success?
-      if call.result[:section_changed]
+      old_section, current_section, section_changed = assign_drop_results(call, meeting_agenda_item_section)
+
+      if section_changed
         move_item_to_other_section_via_turbo_stream(
-          old_section: call.result[:old_section],
-          current_section: call.result[:current_section]
+          old_section:,
+          current_section:,
+          collapsed: ActiveModel::Type::Boolean.new.cast(params[:collapsed])
         )
       else
         move_item_within_section_via_turbo_stream
@@ -286,5 +310,32 @@ class MeetingAgendaItemsController < ApplicationController
     else
       @next_occurrence = next_occurrence.meeting
     end
+  end
+
+  def assign_drop_params # rubocop:disable Metrics/AbcSize
+    @target_id, @position =
+      if params[:type] == "to_current"
+        meeting = Meeting.find_by(id: params[:current_meeting_id])
+        section = meeting.sections.reorder(position: :desc).first
+        [section&.id, section&.last_position]
+      elsif params[:type] == "to_backlog"
+        [@meeting.backlog.id, @meeting.backlog.last_position]
+      else
+        [params[:target_id], params[:position]]
+      end
+  end
+
+  def assign_drop_results(call, meeting_agenda_item_section)
+    if @target_id.nil?
+      old_section     = meeting_agenda_item_section
+      current_section = call.result.meeting_section
+      section_changed = true
+    else
+      old_section     = call.result[:old_section]
+      current_section = call.result[:current_section]
+      section_changed = call.result[:section_changed]
+    end
+
+    [old_section, current_section, section_changed]
   end
 end

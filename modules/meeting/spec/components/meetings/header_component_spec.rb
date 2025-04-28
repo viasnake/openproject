@@ -48,7 +48,7 @@ RSpec.describe Meetings::HeaderComponent, type: :component do
     context "when allowed" do
       before do
         mock_permissions_for(user) do |mock|
-          mock.allow_in_project(:send_meeting_agendas_notification, project:)
+          mock.allow_in_project(:send_meeting_invites_and_outcomes, project:)
         end
       end
 

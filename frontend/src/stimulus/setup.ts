@@ -20,6 +20,7 @@ import PatternInputController from './controllers/pattern-input.controller';
 import HoverCardTriggerController from './controllers/hover-card-trigger.controller';
 import ScrollIntoViewController from './controllers/scroll-into-view.controller';
 import CkeditorFocusController from './controllers/ckeditor-focus.controller';
+import AddMeetingParamsController from './controllers/add-meeting-params.controller';
 
 declare global {
   interface Window {
@@ -55,3 +56,4 @@ instance.register('keep-scroll-position', KeepScrollPositionController);
 instance.register('pattern-input', PatternInputController);
 instance.register('scroll-into-view', ScrollIntoViewController);
 instance.register('ckeditor-focus', CkeditorFocusController);
+instance.register('add-meeting-params', AddMeetingParamsController);

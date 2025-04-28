@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -29,8 +31,8 @@
 require "spec_helper"
 
 RSpec.describe "Projects", "editing settings", :js do
-  let(:name_field) { FormFields::InputFormField.new :name }
-  let(:parent_field) { FormFields::SelectFormField.new :parent }
+  include_context "ng-select-autocomplete helpers"
+
   let(:permissions) { %i(edit_project view_project_attributes edit_project_attributes) }
 
   current_user do
@@ -38,7 +40,7 @@ RSpec.describe "Projects", "editing settings", :js do
   end
 
   shared_let(:project) do
-    create(:project, name: "Foo project", identifier: "foo-project")
+    create(:project, :with_status, name: "Foo project", identifier: "foo-project")
   end
 
   it "hides the field whose functionality is presented otherwise" do
@@ -78,254 +80,120 @@ RSpec.describe "Projects", "editing settings", :js do
     end
   end
 
-  context "with optional and required custom fields" do
-    let!(:optional_custom_field) do
-      create(:project_custom_field, name: "Optional Foo",
-                                    is_for_all: true,
-                                    projects: [project])
-    end
-    let!(:required_custom_field) do
-      create(:project_custom_field, name: "Required Foo",
-                                    is_for_all: true,
-                                    is_required: true,
-                                    projects: [project])
+  describe "editing basic details" do
+    before do
+      Pages::Projects::Settings::General.new(project).visit!
     end
 
-    it "shows optional and required custom fields for edit without a separation" do
-      project.custom_field_values.last.value = "FOO"
-      project.save!
+    it "updates the basic details" do
+      within_section "Basic details" do
+        fill_in "Name", with: "Bar project"
+        fill_in_rich_text "Description", with: "a long and verbose project description."
 
-      visit project_settings_general_path(project.id)
+        click_on "Update details"
+      end
 
-      expect(page).to have_text "Optional Foo"
-      expect(page).to have_text "Required Foo"
+      expect_and_dismiss_flash type: :success, message: "Successful update."
+
+      within_section "Basic details" do
+        expect(page).to have_field "Name", with: "Bar project"
+        expect(page).to have_selector :rich_text, "Description", text: "a long and verbose project description."
+      end
     end
-  end
 
-  context "with a length internal custom field" do
-    let!(:required_custom_field) do
-      create(:string_project_custom_field,
-             name: "Foo",
-             min_length: 1,
-             max_length: 2,
-             is_for_all: true,
-             projects: [project])
-    end
-    let(:foo_field) { FormFields::InputFormField.new required_custom_field }
+    it "displays validation error on invalid input" do
+      within_section "Basic details" do
+        fill_in "Name", with: ""
+        click_on "Update details"
 
-    it "shows the errors of that field when saving (Regression #33766)" do
-      visit project_settings_general_path(project.id)
+        expect(page).to have_field "Name", with: "", validation_error: "Name can't be blank."
 
-      expect(page).to have_content "Foo"
+        fill_in "Name", with: "A" * 256
+        click_on "Update details"
 
-      # Enter something too long
-      foo_field.set_value "1234"
-
-      # It should cut of that remaining value
-      foo_field.expect_value "12"
-
-      click_button "Save"
-
-      expect(page).to have_text "Successful update."
+        expect(page).to have_field "Name", with: "A" * 256, validation_error: "Name is too long (maximum is 255 characters)."
+      end
     end
   end
 
-  context "with a multi-select list custom field" do
-    include_context "ng-select-autocomplete helpers"
+  describe "editing project status" do
+    let(:status_field) { FormFields::SelectFormField.new :status }
 
-    let!(:list_custom_field) { create(:list_project_custom_field, name: "List CF", multi_value: true, projects: [project]) }
-    let(:form_field) { FormFields::SelectFormField.new list_custom_field }
+    before do
+      Pages::Projects::Settings::General.new(project).visit!
+    end
 
-    it "can select multiple values" do
-      visit project_settings_general_path(project.id)
+    it "updates the project status and description" do
+      within_section "Project status" do
+        status_field.select_option "At risk"
+        fill_in_rich_text "Project status description", with: "Light-years behind 🥺"
 
-      form_field.select_option "A", "B"
+        click_on "Update status"
+      end
 
-      click_on "Save"
+      expect_and_dismiss_flash type: :success, message: "Successful update."
 
-      expect(page).to have_content "Successful update."
+      within_section "Project status" do
+        status_field.expect_selected "AT RISK"
+        expect(page).to have_selector :rich_text, "Project status description", text: "Light-years behind 🥺"
+      end
+    end
 
-      form_field.expect_selected "A", "B"
+    it "unsets the project status" do
+      within_section "Project status" do
+        status_field.select_option "Not set"
 
-      cvs = project.reload.custom_value_for(list_custom_field)
-      expect(cvs.count).to eq 2
-      expect(cvs.map(&:typed_value)).to contain_exactly "A", "B"
+        click_on "Update status"
+      end
+
+      expect_and_dismiss_flash type: :success, message: "Successful update."
+
+      within_section "Project status" do
+        status_field.expect_selected "NOT SET"
+      end
     end
   end
 
-  context "with a multi-select user custom field" do
-    include_context "ng-select-autocomplete helpers"
-
-    let!(:list_custom_field) { create(:user_project_custom_field, name: "List CF", multi_value: true, projects: [project]) }
-    let(:dummy_role) { create(:project_role) }
-    let!(:users) do
-      [
-        create(:user, firstname: "First", lastname: "User", member_with_roles: { project => [dummy_role] }),
-        create(:user, firstname: "Second", lastname: "User", member_with_roles: { project => [dummy_role] }),
-        create(:user, firstname: "Third", lastname: "User", member_with_roles: { project => [dummy_role] })
-      ]
-    end
-    let(:form_field) { FormFields::SelectFormField.new list_custom_field }
-
-    it "can select multiple values" do
-      visit project_settings_general_path(project.id)
-
-      form_field.select_option users.first.name, users.last.name
-
-      click_on "Save"
-
-      expect(page).to have_content "Successful update."
-
-      refresh
-
-      expect(page).to have_no_content "Successful update."
-
-      form_field.expect_selected users.first.name, users.last.name
-    end
-  end
-
-  context "with a version custom field" do
-    include_context "ng-select-autocomplete helpers"
-
-    shared_let(:public_project) do
-      create(:project, name: "Public Pr", identifier: "public-pr", public: true)
-    end
-
-    let!(:versions) do
-      [
-        create(:version, project:, name: "Ringbo 1.0", sharing: "system"),
-        create(:version, project: public_project, name: "Ringbo 2.0", sharing: "system")
-      ]
-    end
-
-    let!(:version_custom_field) do
-      create(:version_project_custom_field,
-             name: "List CF",
-             multi_value: true,
-             projects: [project])
-    end
-
-    let(:form_field) { FormFields::SelectFormField.new version_custom_field }
-
-    it "can select multiple values" do
-      visit project_settings_general_path(project.id)
-
-      # expect the versions are grouped by the project name
-      form_field.expect_option(versions.first.name, grouping: project.name)
-      form_field.expect_option(versions.last.name, grouping: public_project.name)
-
-      form_field.select_option(versions.first.name, versions.last.name)
-
-      click_on "Save"
-
-      expect(page).to have_content "Successful update."
-
-      refresh
-
-      expect(page).to have_no_content "Successful update."
-
-      form_field.expect_selected versions.first.name, versions.last.name
-    end
-  end
-
-  context "with a date custom field" do
-    let!(:date_custom_field) { create(:date_project_custom_field, name: "Date", projects: [project]) }
-    let(:form_field) { FormFields::InputFormField.new date_custom_field }
-
-    it "can save and remove the date (Regression #37459)" do
-      visit project_settings_general_path(project.id)
-
-      form_field.set_value "2021-05-26"
-      form_field.send_keys :enter
-
-      click_on "Save"
-
-      expect(page).to have_content "Successful update."
-
-      form_field.expect_value "2021-05-26"
-
-      cv = project.reload.custom_value_for(date_custom_field)
-      expect(cv.typed_value).to eq "2021-05-26".to_date
-    end
-  end
-
-  context "with a user not allowed to see the parent project" do
-    include_context "ng-select-autocomplete helpers"
-
-    let(:parent_project) { create(:project) }
-    let(:parent_field) { FormFields::SelectFormField.new "parent" }
+  describe "editing project relations" do
+    let(:parent_field) { FormFields::SelectFormField.new :parent }
+    let(:parent_project) { create(:project, name: "New parent project") }
 
     before do
       project.update_attribute(:parent, parent_project)
     end
 
-    it "can update the project without destroying the relation to the parent" do
-      visit project_settings_general_path(project.id)
+    context "with a user allowed to see parent project" do
+      current_user { create(:user, member_with_permissions: { project => permissions, parent_project => permissions }) }
 
-      fill_in "Name", with: "New project name"
+      it "updates the parent project" do
+        Pages::Projects::Settings::General.new(project).visit!
 
-      parent_field.expect_selected I18n.t(:"api_v3.undisclosed.parent")
+        within_section "Project relations" do
+          parent_field.expect_selected "New parent project"
+          click_on "Update parent project"
+        end
 
-      click_on "Save"
+        expect_and_dismiss_flash type: :success, message: "Successful update."
 
-      expect(page).to have_content "Successful update."
-
-      project.reload
-
-      expect(project.name)
-        .to eql "New project name"
-
-      expect(project.parent)
-        .to eql parent_project
-    end
-  end
-
-  context "with correct scoping of project custom fields" do
-    let!(:optional_custom_field_activated_in_project) do
-      create(:project_custom_field, name: "Optional Foo",
-                                    is_for_all: true,
-                                    projects: [project])
-    end
-    let!(:optional_custom_field_not_activated_in_project) do
-      create(:project_custom_field, name: "Optional Bar",
-                                    is_for_all: true)
-    end
-
-    it "shows only the custom fields that are activated in the project" do
-      visit project_settings_general_path(project.id)
-
-      expect(page).to have_text "Optional Foo"
-      expect(page).to have_no_text "Optional Bar"
-    end
-  end
-
-  describe "permissions" do
-    context "with edit_project permission only" do
-      let!(:custom_field) { create(:string_project_custom_field, projects: [project]) }
-      let(:foo_field) { FormFields::InputFormField.new custom_field }
-      let(:role) { Role.first }
-
-      it "does not show custom fields" do
-        role.update(permissions: permissions - %i(edit_project_attributes))
-
-        visit project_settings_general_path(project)
-        expect(page).to have_no_content(custom_field.name)
+        within_section "Project relations" do
+          parent_field.expect_selected "New parent project"
+        end
       end
+    end
 
-      it "does not allow saving custom fields" do
-        visit project_settings_general_path(project.id)
+    context "with a user not allowed to see the parent project" do
+      it "can update the project without destroying the relation to the parent" do
+        Pages::Projects::Settings::General.new(project).visit!
 
-        expect(page).to have_content(custom_field.name)
+        within_section "Project relations" do
+          parent_field.expect_selected I18n.t(:"api_v3.undisclosed.parent")
+          click_on "Update parent project"
+        end
 
-        # Remove edit_project_attributes after loading the form
-        role.update(permissions: permissions - %i(edit_project_attributes))
-        current_user.reload
+        expect_and_dismiss_flash type: :success, message: "Successful update."
 
-        foo_field.set_value "1234"
-
-        click_on "Save"
-        expect(page)
-          .to have_text "#{custom_field.name} was attempted to be written but is not writable."
+        project.reload
+        expect(project.parent).to eq parent_project
       end
     end
   end

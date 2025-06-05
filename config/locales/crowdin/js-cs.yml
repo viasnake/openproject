@@ -1036,9 +1036,15 @@ cs:
       reminders:
         button_label: "Nastavit připomínku"
         title:
-          new: "Nastavit připomenutí"
+          new: "Set a reminder"
           edit: "Upravit připomínku"
         subtitle: "Za tento pracovní balíček obdržíte oznámení ve zvoleném čase."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Data tohoto pracovního balíčku jsou automaticky odvozena od jeho dětí. Aktivujte 'Manuální plánování' pro ručné nastavení dat."
         is_switched_from_manual_to_automatic: "Data tohoto pracovního balíčku budou možná muset být přepočítána po přepnutí z manuálu na automatické plánování kvůli vztahům s ostatními pracovními balíčky."

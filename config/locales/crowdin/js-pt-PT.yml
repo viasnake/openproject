@@ -1035,9 +1035,15 @@ pt-PT:
       reminders:
         button_label: "Definir lembrete"
         title:
-          new: "Definir lembrete"
+          new: "Set a reminder"
           edit: "Editar lembrete"
         subtitle: "Irá receber uma notificação para este pacote de trabalho na hora selecionada."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "As datas deste pacote de trabalho são deduzidas automaticamente dos seus filhos. Ative o 'Agendamento manual' para definir as datas."
         is_switched_from_manual_to_automatic: "As datas deste pacote de trabalho podem precisar de ser recalculadas após mudar de agendamento manual para automático, devido a relações com outros pacotes de trabalho."

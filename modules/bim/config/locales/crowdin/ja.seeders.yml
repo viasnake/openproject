@@ -47,7 +47,7 @@ ja:
           name: クラッシュ
       global_queries:
         item_0:
-          name: ''
+          name: '埋め込みテーブル: 子'
       type_configuration:
         item_0:
           form_configuration:

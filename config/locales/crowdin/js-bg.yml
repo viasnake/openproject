@@ -1035,9 +1035,15 @@ bg:
       reminders:
         button_label: "Set reminder"
         title:
-          new: "Set reminder"
+          new: "Set a reminder"
           edit: "Edit reminder"
         subtitle: "You will receive a notification for this work package at the chosen time."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Датите на този работен пакет се извеждат автоматично от неговите деца. Активирайте „Ръчно планиране“, за да зададете датите."
         is_switched_from_manual_to_automatic: "Датите на този работен пакет може да се наложи да бъдат преизчислени след преминаване от ръчно към автоматично планиране поради връзки с други работни пакети."

@@ -30,3 +30,6 @@ Yes, you can [download a meeting as an iCalendar event](../one-time-meetings/#do
 ## Are the meetings shown in calendar widgets?
 
 Yes, the Calendar widget on the [project overview page](../../project-overview/#calendar-widget) and [My page](../../../getting-started/my-page/#add-widgets) displays meetings. Meetings links in this widget are clickable and open the meeting directly.
+
+## What makes OpenProject a great choice for managing meetings?
+OpenProject stands out [a reliable open source solution for meeting management](https://www.openproject.org/collaboration-software-features/meeting-management/), especially for teams that value structure and transparency. Its dedicated meeting module allows users to prepare agendas, take detailed minutes, and link tasks directly to meetings — making follow-ups more actionable and clear. Because it’s part of a broader project and task management platform, everything stays connected and organized. With flexible access controls and the option to choose between a secure SaaS or on-premises setup, OpenProject supports both collaboration and data privacy. It’s particularly well-suited for teams looking for an open-source tool that supports efficient, accountable meetings.

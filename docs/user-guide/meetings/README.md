@@ -8,7 +8,7 @@ keywords: meetings
 
 # Meeting management
 
-[Meetings in OpenProject](https://www.openproject.org/collaboration-software-features/meeting-management/) allow you to manage and document your project meetings, prepare a meeting agenda together with your team, and share minutes with attendees - all in one central place.
+Meetings in OpenProject allow you to manage and document your project meetings, prepare a meeting agenda together with your team, and share minutes with attendees - all in one central place.
 
 <div class="glossary">
 
@@ -86,4 +86,6 @@ You can also use the meetings filters to refine the list of meetings based on th
   ![Filter the list of dynamic meetings in OpenProject](openproject_userguide_meetings_filters.png)
 
 > [!TIP]
-> If you are interested in how the Meetings module is used by the OpenProject team, please take a look at [this blog article](https://www.openproject.org/blog/meeting-management-example/).
+> If you are interested in how the Meetings module is used by the OpenProject team, please take a look at [this blog article](https://www.openproject.org/blog/meeting-management-example/). 
+>
+>  Find out more about OpenProject as [open source meeting management software]( https://www.openproject.org/collaboration-software-features/meeting-management/) .

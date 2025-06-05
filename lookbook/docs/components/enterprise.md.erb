@@ -30,7 +30,7 @@ en:
   # ... other keys
   ee:
     feature:
-	  # ...
+    # ...
       your_feature_name: "Fancy Enterprise feature!"
     upsell:
       # ...
@@ -48,7 +48,7 @@ for the upsell translation keys.
 ### Plan information
 The last sentence of each banner indicates the lowest plan that includes the feature. The phrasing is: "Available starting with the Enterprise {Plan name} plan."
 
-This line is appende automatically with the correct information based on the users' current plan.
+This line is appended automatically with the correct information based on the users' current plan.
 
 #### Static links
 
@@ -85,13 +85,11 @@ Once dismissed, it is not shown again.
 
 Pleases note that admins will see an 'Upgrade' button but regular users will only see a 'More information' link.
 
-
 ```ruby
 render EnterpriseEdition::BannerComponent.new(:enterprise_feature, dismissable: true)
 ```
 
 <%= embed OpenProject::EnterpriseEdition::BannerComponentPreview, :dismissable, panels: %i[] %>
-
 
 Use when: You want to show content below the banners, e.g. in administrative setting pages.
 
@@ -99,7 +97,7 @@ Use when: You want to show content below the banners, e.g. in administrative set
 
 The medium variant gives you of an opportunity to illustrate what the feature does and is more appealing than the inline variant. Use this when you want add additional context, and when the feature is not just a small setting.
 
-The medium variant banner has a fixed height of 220px and also also requires an image on the right side.
+The medium variant banner has a fixed height of 220px and also requires an image on the right side.
 
 **Tips:**
 
@@ -114,7 +112,7 @@ render EnterpriseEdition::BannerComponent.new(:enterprise_feature, variant: :med
 
 ## Large variant banners
 
-The large variant upsell banner is used an entire page is inaccessible to the current user because their plan does not include that feature (vs. only a part of that feature not being available).
+The large variant upsell banner is used when an entire page is inaccessible to the current user because their plan does not include that feature (vs. only a part of that feature not being available).
 This banner is used when there is an illustration video present that requires this amount of space.
 
 For example: when a community user clicks on the 'Team planner' module (but it's not included in their plan)

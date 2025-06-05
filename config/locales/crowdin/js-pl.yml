@@ -1037,9 +1037,15 @@ pl:
       reminders:
         button_label: "Ustaw przypomnienie"
         title:
-          new: "Ustaw przypomnienie"
+          new: "Set a reminder"
           edit: "Edytuj przypomnienie"
         subtitle: "W wybranym terminie otrzymasz powiadomienie dotyczące tego pakietu roboczego."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Daty tego pakietu roboczego są automatycznie odejmowane od jego elementów podrzędnych. Włącz funkcję Planowanie ręczne, aby ustawić daty."
         is_switched_from_manual_to_automatic: "Po przełączeniu planowania z ręcznego na automatyczne konieczne może być ponowne obliczenie dat tego pakietu roboczego ze względu na jego powiązania z innymi pakietami roboczymi."

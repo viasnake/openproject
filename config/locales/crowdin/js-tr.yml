@@ -1034,9 +1034,15 @@ tr:
       reminders:
         button_label: "Hatırlatma ayarla"
         title:
-          new: "Hatırlatma ayarla"
+          new: "Set a reminder"
           edit: "Hatırlatma düzenle"
         subtitle: "Seçilen zamanda bu iş paketi için bir bildirim alacaksınız."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Bu çalışma paketinin tarihleri otomatik olarak çocuklarından çıkarılır. Tarihleri ayarlamak için 'Manuel zamanlama'yı etkinleştirin."
         is_switched_from_manual_to_automatic: "Bu çalışma paketinin tarihlerinin, diğer çalışma paketleriyle olan ilişkiler nedeniyle manuelden otomatik zamanlamaya geçtikten sonra yeniden hesaplanması gerekebilir."

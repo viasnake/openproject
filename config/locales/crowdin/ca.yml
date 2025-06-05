@@ -4328,8 +4328,12 @@ ca:
       code_500_missing_enterprise_token: "The request can not be handled due to invalid or missing Enterprise token."
       bad_request:
         emoji_reactions_activity_type_not_supported: "This activity type does not support emoji reactions."
+      conflict:
+        multiple_reminders_not_allowed: |-
+          You can only set one reminder at a time for a work package. Please delete or update the existing reminder.
       not_found:
         work_package: "No s'ha pogut trobar o s'ha eliminat el paquet de treball que estàs buscant."
+        reminder: "The reminder you are looking for cannot be found or has been deleted."
       expected:
         date: "AAAA-MM-DD ( només dates ISO 8601)"
         datetime: "YYYY-MM-DDThh:mm:ss[.lll][+hh:mm] (qualsevol data o temps compatible amb la ISO 8601)"

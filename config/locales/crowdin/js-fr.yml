@@ -1035,9 +1035,15 @@ fr:
       reminders:
         button_label: "Définir un rappel"
         title:
-          new: "Définir un rappel"
+          new: "Set a reminder"
           edit: "Modifier un rappel"
         subtitle: "Vous recevrez une notification pour ce lot de travaux au moment choisi."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Les dates de ce lot de travaux sont automatiquement déduites de ses enfants. Activez la « Planification manuelle » pour définir les dates."
         is_switched_from_manual_to_automatic: "Les dates de ce lot de travaux peuvent avoir besoin d'être recalculées après avoir passé de la planification manuelle à la planification automatique en raison de relations avec d'autres lots de travaux."

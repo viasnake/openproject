@@ -1033,9 +1033,15 @@ zh-TW:
       reminders:
         button_label: "設定提醒"
         title:
-          new: "設定提醒"
+          new: "Set a reminder"
           edit: "編輯提醒"
         subtitle: "您會在選擇的時間收到此工作項目的通知。"
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "此工作包的日期會自動從其子項推導出。可啟用“手動計劃”來設置日期。"
         is_switched_from_manual_to_automatic: "由於與其他工作包的關係，在從手動計劃切換為自動計劃後，此工作包的日期可能需要重新計算。"

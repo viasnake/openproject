@@ -306,7 +306,7 @@ ja:
         oidc_token_exchange_failed: There seems to be a problem with the Token Exchange setup on your OpenID Connect Provider. Please check its configuration and try again.
         oidc_token_refresh_failed: There was an error while trying to check your access to the storage. Please check the server logs for further information.
         unknown_error: The connection could not be validated. An unknown error occurred. Please check the server logs for further information.
-      label_error: エラー！
+      label_error: エラー
       label_failed: Failed
       label_healthy: Healthy
       label_passed: Passed

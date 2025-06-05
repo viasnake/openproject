@@ -1034,9 +1034,15 @@ vi:
       reminders:
         button_label: "Set reminder"
         title:
-          new: "Set reminder"
+          new: "Set a reminder"
           edit: "Edit reminder"
         subtitle: "You will receive a notification for this work package at the chosen time."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Ngày của gói công việc này được suy ra tự động từ các con của nó. Kích hoạt 'Lên lịch thủ công' để đặt ngày."
         is_switched_from_manual_to_automatic: "Ngày của gói công việc này có thể cần phải được tính toán lại sau khi chuyển từ lên lịch thủ công sang tự động do mối quan hệ với các gói công việc khác."

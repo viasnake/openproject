@@ -25,7 +25,7 @@ Examples for this include managing work packages, projects and users.
 
 ➔ [Go to OpenProject API](./introduction/)
 
-### OpenAPI Specification
+### OpenAPI specification
 
 Download the API specification in OpenAPI format as [json](https://www.openproject.org/docs/api/v3/spec.json) or [yml](https://www.openproject.org/docs/api/v3/spec.yml).
 

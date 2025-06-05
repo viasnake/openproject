@@ -245,6 +245,29 @@ sk:
     blankslate:
       title: "No meetings to display"
       desc: "There are no meetings that meet the active filter criteria."
+    label_export_pdf: "Export PDF"
+    export:
+      your_meeting_export: "Meeting is being exported"
+      label_meeting_agenda: "Meeting agenda"
+    export_pdf_dialog:
+      title: Export PDF
+      description: Generate a printable PDF file of this meeting at the current state
+      include_participants:
+        label: Include list of participants
+        caption: A list of participants will be preset above the meeting agenda
+      include_attachments:
+        label: Include list of attachments
+        caption: A list containing the filenames of attachments will be appended at the end
+      include_backlog:
+        label: Include backlog
+        caption: Backlog elements are not normally considered part of a meeting occurrence but you can choose to include them
+      include_outcomes:
+        label: Include agenda outcomes
+        caption: If your agenda outcomes contain confidential information, you can choose to not include them in the export
+      footer_text:
+        label: Footer text
+        caption: This text will appear on every page on the right of the footer.
+      submit_button: Download
   meeting_section:
     untitled_title: "Untitled section"
     delete_confirmation: "Deleting the section will also delete all of its agenda items. Are you sure you want to do this?"

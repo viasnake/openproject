@@ -748,8 +748,7 @@ zh-TW:
     lag:
       subject: "延遲"
       caption: |-
-        The minimum number of working days to keep in between the two work packages.
-        It can also be negative.
+        兩個工作項目之間的最少間隔工作天數。這個數值也可以是負數。
     relations:
       label_new_child_created: "建立新的工作項目，並以子項目新增"
       label_relates_singular: "相關於"
@@ -965,10 +964,10 @@ zh-TW:
       project/phase:
         date_range: "日期範圍"
         definition: "定義"
-        duration: "Duration"
-        start_date: "Start date"
-        start_date_caption: "Follows the previous phase."
-        finish_date: "Finish date"
+        duration: "持續時間"
+        start_date: "起始日期"
+        start_date_caption: "延續前一階段。"
+        finish_date: "完成日期"
       project/phase_definition:
         name: "名稱"
         color: "顏色"
@@ -1281,11 +1280,11 @@ zh-TW:
         project/phase:
           attributes:
             start_date:
-              must_be_before_finish_date: "must be before the finish date."
-              non_continuous_dates: "can't be earlier than the previous phase's end date."
+              must_be_before_finish_date: "必須在完成日期之前。"
+              non_continuous_dates: "不能早於前一階段的結束日期。"
             finish_date:
-              must_be_after_start_date: "must be after the start date."
-          cannot_be_a_non_working_day: "can't be a non-working day."
+              must_be_after_start_date: "必須在開始日期之後。"
+          cannot_be_a_non_working_day: "不能是非工作日。"
         query:
           attributes:
             project:
@@ -2562,8 +2561,8 @@ zh-TW:
   label_deleted_custom_item: "(刪除項目)"
   label_deleted_custom_option: "(刪除的選項)"
   label_empty_element: "(空)"
-  label_go_back: "Go back one menu level"
-  label_go_forward: "Open %{module} sub-menu"
+  label_go_back: "回到上一層選單"
+  label_go_forward: "開啟 %{module} 子選單"
   label_missing_or_hidden_custom_option: "(缺少值或缺少訪問權限)"
   label_descending: "降冪"
   label_details: "詳細資料"
@@ -4291,8 +4290,12 @@ zh-TW:
       code_500_missing_enterprise_token: "由於企業權杖是無效的或缺失的，故無法處理該請求。"
       bad_request:
         emoji_reactions_activity_type_not_supported: "此活動類型不支持表情符號反應。"
+      conflict:
+        multiple_reminders_not_allowed: |-
+          You can only set one reminder at a time for a work package. Please delete or update the existing reminder.
       not_found:
         work_package: "找不到您要查找的工作項目或者它已被刪除。"
+        reminder: "The reminder you are looking for cannot be found or has been deleted."
       expected:
         date: "YYYY-MM-DD (僅適用於 ISO 8601 日期)"
         datetime: "YYYY-MM-DDThh:mm:ss[.lll][+hh:mm](任何兼容的 ISO 8601 日期時間)"

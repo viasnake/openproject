@@ -1034,9 +1034,15 @@ ms:
       reminders:
         button_label: "Tetapkan peringatan"
         title:
-          new: "Tetapkan peringatan"
+          new: "Set a reminder"
           edit: "Sunting peringatan"
         subtitle: "Anda akan menerima pemberitahuan untuk pakej kerja ini pada masa yang dipilih."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Tarikh pakej kerja ini disimpulkan secara automatik dari anaknya. Aktifkan 'Penjadualan Manual' untuk tetapkan tarikh."
         is_switched_from_manual_to_automatic: "Tarikh pakej kerja ini mungkin perlu dikira semula selepas menukar dari penjadualan manual ke automatik kerana hubungan dengan pakej kerja lain."

@@ -1035,9 +1035,15 @@ es:
       reminders:
         button_label: "Establecer recordatorio"
         title:
-          new: "Establecer recordatorio"
+          new: "Set a reminder"
           edit: "Editar recordatorio"
         subtitle: "Recibirá una notificación para este paquete de trabajo en el momento elegido."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Las fechas de este paquete de trabajo son deducidas automáticamente de sus sub-elementos. Active 'Programación manual' para establecer las fechas."
         is_switched_from_manual_to_automatic: "Las fechas de este paquete de trabajo pueden necesitar ser recalculadas después de pasar de programación manual a programación automática debido a las relaciones con otros paquetes de trabajo."

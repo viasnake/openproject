@@ -4292,8 +4292,12 @@ ms:
       code_500_missing_enterprise_token: "Permintaan tidak boleh dikendalikan kerana token Enterprise yang tidak sah atau hilang."
       bad_request:
         emoji_reactions_activity_type_not_supported: "This activity type does not support emoji reactions."
+      conflict:
+        multiple_reminders_not_allowed: |-
+          You can only set one reminder at a time for a work package. Please delete or update the existing reminder.
       not_found:
         work_package: "Pakej kerja yang anda cari tidak dapat ditemui atau telah dipadamkan."
+        reminder: "The reminder you are looking for cannot be found or has been deleted."
       expected:
         date: "TTTT-BB-HH (ISO 8601 tarikh sahaja)"
         datetime: "TTTT-BB-HHTjj:mm:ss[.lll][+jj:mm] (mana-mana tarikh masa ISO 8601 yang sesuai)"

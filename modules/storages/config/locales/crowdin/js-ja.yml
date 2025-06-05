@@ -61,7 +61,7 @@ ja:
           Are you sure you want to unlink the file from this work package? Unlinking does not affect the original file and only removes the connection to this work package.
         remove_short: "Remove link"
         select: "Select files"
-        select_all: "全てを選択"
+        select_all: "全て選択"
         selection:
           zero: "Select files to link"
           other: "Link %{count} files"

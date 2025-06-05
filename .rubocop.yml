@@ -142,7 +142,7 @@ Naming/ClassAndModuleCamelCase:
 Naming/FileName:
   Enabled: false
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   ForbiddenPrefixes:
     - is_
 

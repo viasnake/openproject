@@ -1037,9 +1037,15 @@ uk:
       reminders:
         button_label: "Установити нагадування"
         title:
-          new: "Установити нагадування"
+          new: "Set a reminder"
           edit: "Редагувати нагадування"
         subtitle: "Ви отримаєте сповіщення про цей пакет робіт у вибраний час."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Дати цього пакета робіт автоматично виводяться з його дочірніх елементів. Активуйте «Ручне планування», щоб установити ці дати."
         is_switched_from_manual_to_automatic: "Можливо, дати цього пакета робіт знадобиться перерахувати після переходу з ручного на автоматичне планування через зв’язок з іншими пакетами робіт."

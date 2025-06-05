@@ -4333,8 +4333,12 @@ tr:
       code_500_missing_enterprise_token: "Geçersiz veya eksik Enterprise belirteci nedeniyle istek işlenemiyor."
       bad_request:
         emoji_reactions_activity_type_not_supported: "This activity type does not support emoji reactions."
+      conflict:
+        multiple_reminders_not_allowed: |-
+          You can only set one reminder at a time for a work package. Please delete or update the existing reminder.
       not_found:
         work_package: "Aradığınız çalışma paketi bulunamadı veya silinmiş."
+        reminder: "The reminder you are looking for cannot be found or has been deleted."
       expected:
         date: "YYYY-AA-GG (ISO 8601 sadece tarih)"
         datetime: "YYYY-AA-GGThs:dd:ss[.lll][+ss:dd] (uyumlu herhangi bir ISO 8601 tarih/saat)"

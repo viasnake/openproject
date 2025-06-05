@@ -1035,9 +1035,15 @@ it:
       reminders:
         button_label: "Imposta promemoria"
         title:
-          new: "Imposta promemoria"
+          new: "Set a reminder"
           edit: "Modifica promemoria"
         subtitle: "Riceverai una notifica per questa macro-attività all'ora scelta."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "Le date di questa macro-attività vengono automaticamente dedotte dai suoi figli. Attiva 'Programmazione manuale' per impostare le date."
         is_switched_from_manual_to_automatic: "Potrebbe essere necessario ricalcolare le date di questa macro-attività dopo il passaggio dalla programmazione manuale alla programmazione automatica a causa delle relazioni con altre macro-attività."

@@ -1034,9 +1034,15 @@ ko:
       reminders:
         button_label: "미리 알림 설정"
         title:
-          new: "미리 알림 설정"
+          new: "Set a reminder"
           edit: "미리 알림 편집"
         subtitle: "선택한 시간에 이 작업 패키지에 대한 알림을 받게 됩니다."
+        presets:
+          tomorrow: "Tomorrow"
+          three_days: "In 3 days"
+          week: "In a week"
+          month: "In a month"
+          custom: "At a particular date/time"
       scheduling:
         is_parent: "이 작업 패키지의 날짜는 자식으로부터 자동으로 추정됩니다. '수동 스케줄링'을 활성화하여 날짜를 설정할 수 있습니다."
         is_switched_from_manual_to_automatic: "다른 작업 패키지와의 관계로 인해 수동 스케줄링에서 자동 스케줄링으로 전환한 후 이 작업 패키지의 날짜를 다시 계산해야 할 수 있습니다."

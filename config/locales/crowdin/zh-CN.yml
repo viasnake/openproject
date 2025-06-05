@@ -4285,8 +4285,12 @@ zh-CN:
       code_500_missing_enterprise_token: "由于企业令牌是无效的或缺失的，故无法处理该请求。"
       bad_request:
         emoji_reactions_activity_type_not_supported: "此活动类型不支持表情符号反应。"
+      conflict:
+        multiple_reminders_not_allowed: |-
+          You can only set one reminder at a time for a work package. Please delete or update the existing reminder.
       not_found:
         work_package: "找不到您要查找的工作包或者它已被删除。"
+        reminder: "The reminder you are looking for cannot be found or has been deleted."
       expected:
         date: "YYYY-MM-DD（仅适用于 ISO 8601 日期）"
         datetime: "YYYY-MM-DDThh:mm:ss[.lll][+hh:mm]（任何兼容的 ISO 8601 日期时间）"

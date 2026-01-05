@@ -81,6 +81,7 @@ class RootSeeder < Seeder
     seed_development_data if seed_development_data?
     seed_plugins_data
     seed_env_data
+    seed_mcp_configuration
     cleanup_seed_data
   end
 
@@ -177,6 +178,12 @@ class RootSeeder < Seeder
       print_status "*** Loading #{engine.engine_name} seed data"
       engine.load_seed
     end
+  end
+
+  def seed_mcp_configuration
+    print_status "*** Seeding MCP configuration"
+    McpConfigurationSeeder.new(seed_data).seed!
+    McpConfigurationSeeder
   end
 
   def desired_lang

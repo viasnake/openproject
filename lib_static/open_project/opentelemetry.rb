@@ -42,17 +42,21 @@ module OpenProject
       exception = log_context[:exception]
       return if exception.nil?
 
+      trace_exception(exception, log_context)
+    end
+
+    def trace_exception(exception, context = {})
       current_span = ::OpenTelemetry::Trace.current_span
       if current_span.context.valid?
         # Add exception to current span
         current_span.record_exception(exception)
-        set_span_attributes(current_span, tags(log_context))
+        set_span_attributes(current_span, tags(context))
       else
         # Create a new span for the exception if no current span
         tracer = ::OpenTelemetry.tracer_provider.tracer("openproject")
         tracer.in_span("exception") do |span|
           span.record_exception(exception)
-          set_span_attributes(span, tags(log_context))
+          set_span_attributes(span, tags(context))
         end
       end
     end

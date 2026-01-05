@@ -161,6 +161,8 @@ gem "ttfunk", "~> 1.7.0" # remove after https://github.com/prawnpdf/prawn/issues
 # prawn implicitly depends on matrix gem no longer in ruby core with 3.1
 gem "matrix", "~> 0.4.3"
 
+gem "mcp", "~> 0.4.0"
+
 gem "meta-tags", "~> 2.22.2"
 
 gem "paper_trail", "~> 17.0.0"
@@ -200,7 +202,7 @@ gem "aws-sdk-core", "~> 3.240"
 # File upload via fog + screenshots on travis
 gem "aws-sdk-s3", "~> 1.209"
 
-gem "openproject-token", "~> 8.3.0"
+gem "openproject-token", "~> 8.4.0"
 
 gem "plaintext", "~> 0.3.7"
 
@@ -234,7 +236,7 @@ gem "opentelemetry-sdk", "~> 1.10", require: false
 
 gem "view_component", "~> 4.1.1"
 # Lookbook
-gem "lookbook", "2.3.13"
+gem "lookbook", "2.3.14"
 
 gem "inline_svg", "~> 1.10.0"
 

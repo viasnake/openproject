@@ -1,0 +1,164 @@
+# frozen_string_literal: true
+
+#-- copyright
+# OpenProject is an open source project management software.
+# Copyright (C) the OpenProject GmbH
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version 3.
+#
+# OpenProject is a fork of ChiliProject, which is a fork of Redmine. The copyright follows:
+# Copyright (C) 2006-2013 Jean-Philippe Lang
+# Copyright (C) 2010-2013 the ChiliProject Team
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#
+# See COPYRIGHT and LICENSE files for more details.
+#++
+
+require "spec_helper"
+
+RSpec.describe "MCP search_project tool", with_flag: { mcp_server: true } do
+  subject do
+    header "Authorization", "Bearer #{access_token.plaintext_token}"
+    header "X-Authentication-Scheme", "Bearer"
+    header "Content-Type", "application/json"
+    post "/mcp", request_body.to_json
+  end
+
+  let(:access_token) { create(:oauth_access_token, scopes: "mcp", resource_owner: user) }
+  let(:user) { create(:admin) } # using an admin, so that projects are visible
+  let(:request_body) do
+    {
+      jsonrpc: "2.0",
+      id: "Test-Request",
+      method: "tools/call",
+      params: {
+        name: "search_project",
+        arguments: call_args
+      }
+    }
+  end
+  let(:call_args) { { identifier: "abc" } }
+  let(:parsed_results) { JSON.parse(last_response.body).fetch("result") }
+
+  let!(:project_a) { create(:project, identifier: "abc", name: "The ABC Project", status_code: :on_track) }
+  let!(:project_b) { create(:project, identifier: "def", name: "The DEF Project", status_code: :off_track) }
+
+  let(:server_config) { create(:mcp_configuration, identifier: "mcp_server") }
+  let(:tool_config) { create(:mcp_configuration, identifier: McpTools::SearchProject.qualified_name) }
+
+  before do
+    server_config.save!
+    tool_config.save!
+  end
+
+  context "when the mcp_server enterprise feature is enabled", with_ee: %i[mcp_server] do
+    it_behaves_like "MCP response with structured content"
+
+    it "finds a project by identifier" do
+      subject
+      expect(parsed_results.fetch("structuredContent")).to be_present
+    end
+
+    it "responds with a properly formatted project" do
+      subject
+      project = parsed_results.fetch("structuredContent").first
+      expect(project.to_json).to match_json_schema.from_docs("project_model")
+    end
+
+    context "when passing a non-exact identifier" do
+      let(:call_args) { { identifier: "Abc" } }
+
+      it "does not find the project" do
+        subject
+        expect(parsed_results.fetch("structuredContent")).to be_empty
+      end
+    end
+
+    context "when passing an exact name" do
+      let(:call_args) { { name: "The ABC Project" } }
+
+      it "finds the project" do
+        subject
+        expect(parsed_results.fetch("structuredContent")).to be_present
+      end
+    end
+
+    context "when passing a non-exact name" do
+      let(:call_args) { { name: "The abc" } }
+
+      it "finds the project" do
+        subject
+        expect(parsed_results.fetch("structuredContent")).to be_present
+      end
+    end
+
+    context "when passing a project status" do
+      let(:call_args) { { status_code: "on_track" } }
+
+      it "finds the project" do
+        subject
+        expect(parsed_results.fetch("structuredContent")).to be_present
+      end
+
+      context "and when passing a project identifier" do
+        let(:call_args) { { status_code: "on_track", identifier: "abc" } }
+
+        it "finds the project" do
+          subject
+          expect(parsed_results.fetch("structuredContent")).to be_present
+        end
+      end
+
+      context "and when passing the project identifier of a project in a different status" do
+        let(:call_args) { { status_code: "on_track", identifier: "def" } }
+
+        it "does not find the project" do
+          subject
+          expect(parsed_results.fetch("structuredContent")).to be_empty
+        end
+      end
+    end
+
+    context "when passing an invalid project status" do
+      let(:call_args) { { status_code: "blubb" } }
+
+      it_behaves_like "MCP error response"
+    end
+
+    context "when user can't see projects" do
+      let(:user) { create(:user) }
+
+      it "does not find the project" do
+        subject
+        expect(parsed_results.fetch("structuredContent")).to be_empty
+      end
+    end
+
+    context "when the tool is disabled via configuration" do
+      let(:tool_config) { create(:mcp_configuration, identifier: McpTools::SearchProject.qualified_name, enabled: false) }
+
+      it_behaves_like "MCP error response"
+    end
+  end
+
+  context "when the mcp_server enterprise feature is disabled" do
+    it "responds in a 404" do
+      subject
+      expect(last_response).to have_http_status(404)
+    end
+  end
+end

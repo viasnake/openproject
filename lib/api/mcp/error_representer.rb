@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -21,27 +23,39 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module OpenProject
-  module Patches
-    ##
-    # Allow directory labels in lookbook to be inflected
-    module LookbookTreeNodeInflector
-      def label
-        return name if name == "OpenProject"
+module API
+  class Mcp
+    class ErrorRepresenter
+      INVALID_REQUEST = -32600
+      INTERNAL_ERROR = -32603
 
-        super
+      def initialize(error)
+        @error = error
+      end
+
+      def to_json(*)
+        {
+          jsonrpc: "2.0",
+          error: {
+            code: map_code(@error.code),
+            message: @error.message,
+            data: @error.details
+          }
+        }.to_json(*)
+      end
+
+      private
+
+      def map_code(code)
+        return INTERNAL_ERROR if code >= 500
+
+        INVALID_REQUEST
       end
     end
-  end
-end
-
-if Rails.env.local?
-  OpenProject::Patches.patch_gem_version "lookbook", "2.3.14" do
-    Lookbook::TreeNode.prepend OpenProject::Patches::LookbookTreeNodeInflector
   end
 end

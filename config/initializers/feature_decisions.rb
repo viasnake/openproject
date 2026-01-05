@@ -52,6 +52,9 @@ OpenProject::FeatureDecisions.add :calculated_value_project_attribute,
 OpenProject::FeatureDecisions.add :beta_widgets,
                                   description: "Enables BETA versions of widgets."
 
+OpenProject::FeatureDecisions.add :mcp_server,
+                                  description: "Enables the experimental MCP API."
+
 OpenProject::FeatureDecisions.add :minutes_styling_meeting_pdf,
                                   description: "Allow exporting a meeting with FITKO styling. " \
                                                "See #65124 for details."

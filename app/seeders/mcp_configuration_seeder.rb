@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -25,23 +27,50 @@
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
+class McpConfigurationSeeder < Seeder
+  def seed_data!
+    seed_server_config if server_missing?
 
-module OpenProject
-  module Patches
-    ##
-    # Allow directory labels in lookbook to be inflected
-    module LookbookTreeNodeInflector
-      def label
-        return name if name == "OpenProject"
+    seed_tool_configs
+  end
 
-        super
-      end
+  def applicable?
+    server_missing? || tools_missing?
+  end
+
+  def not_applicable_message
+    "No seeding of additional MCP configuration necessary."
+  end
+
+  private
+
+  def seed_server_config
+    McpConfiguration.create!(
+      identifier: API::Mcp::CONFIGURATION_IDENTIFIER,
+      title: Setting.app_title,
+      description: "Performs project management tasks on the given installation of OpenProject.",
+      enabled: true
+    )
+  end
+
+  def seed_tool_configs
+    McpTools.all.each do |thing| # rubocop:disable Rails/FindEach
+      next if McpConfiguration.find_by(identifier: thing.qualified_name)
+
+      McpConfiguration.create!(
+        identifier: thing.qualified_name,
+        title: thing.default_title,
+        description: thing.default_description,
+        enabled: true
+      )
     end
   end
-end
 
-if Rails.env.local?
-  OpenProject::Patches.patch_gem_version "lookbook", "2.3.14" do
-    Lookbook::TreeNode.prepend OpenProject::Patches::LookbookTreeNodeInflector
+  def server_missing?
+    McpConfiguration.where(identifier: API::Mcp::CONFIGURATION_IDENTIFIER).empty?
+  end
+
+  def tools_missing?
+    (McpTools.all.map(&:qualified_name) - McpConfiguration.pluck(:identifier)).any?
   end
 end

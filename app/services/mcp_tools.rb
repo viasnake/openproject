@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -21,27 +23,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module OpenProject
-  module Patches
-    ##
-    # Allow directory labels in lookbook to be inflected
-    module LookbookTreeNodeInflector
-      def label
-        return name if name == "OpenProject"
-
-        super
-      end
+module McpTools
+  class << self
+    def all
+      [
+        McpTools::SearchProject
+      ]
     end
-  end
-end
 
-if Rails.env.local?
-  OpenProject::Patches.patch_gem_version "lookbook", "2.3.14" do
-    Lookbook::TreeNode.prepend OpenProject::Patches::LookbookTreeNodeInflector
+    def enabled
+      McpConfiguration.where(enabled: true).pluck(:identifier).filter_map { |name| tools_by_name[name] }
+    end
+
+    def tools_by_name
+      all.index_by(&:qualified_name)
+    end
   end
 end

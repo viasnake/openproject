@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) the OpenProject GmbH
@@ -21,27 +23,21 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-module OpenProject
-  module Patches
-    ##
-    # Allow directory labels in lookbook to be inflected
-    module LookbookTreeNodeInflector
-      def label
-        return name if name == "OpenProject"
-
-        super
-      end
+MCP.configure do |config|
+  config.exception_reporter = lambda do |exception, server_context|
+    cause = exception.cause
+    message = "Unhandled exception occured during MCP request: #{exception}"
+    if cause
+      message += ", caused by #{cause} at #{cause.backtrace.first}"
     end
-  end
-end
 
-if Rails.env.local?
-  OpenProject::Patches.patch_gem_version "lookbook", "2.3.14" do
-    Lookbook::TreeNode.prepend OpenProject::Patches::LookbookTreeNodeInflector
+    Rails.logger.error message
+    OpenProject::Appsignal.trace_exception(exception, server_context) if OpenProject::Appsignal.enabled?
+    OpenProject::OpenTelemetry.trace_exception(exception, server_context) if OpenProject::OpenTelemetry.enabled?
   end
 end

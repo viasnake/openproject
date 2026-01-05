@@ -95,6 +95,7 @@ module OpenProject
     module Scope
       API_V3 = :api_v3
       SCIM_V2 = :scim_v2
+      MCP_SCOPE = :mcp
 
       class << self
         def values

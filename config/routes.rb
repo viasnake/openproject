@@ -45,6 +45,8 @@ Rails.application.routes.draw do
 
   get "/api/docs" => "api_docs#index"
 
+  mount API::Mcp => "/mcp"
+
   # Redirect deprecated issue links to new work packages uris
   get "/issues(/)" => redirect("#{rails_relative_url_root}/work_packages")
   # The URI.escape doesn't escape / unless you ask it to.
